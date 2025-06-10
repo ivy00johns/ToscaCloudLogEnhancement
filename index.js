@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tosca Cloud Log Enhancer
 // @namespace    http://tricentis.com/
-// @version      1.1
+// @version      1.3
 // @description  Enhance readability of Tosca Cloud logs
 // @match        https://*.tricentis.com/_portal/space/*/runs/*
 // @grant        none
@@ -10,11 +10,15 @@
 (function () {
 	'use strict';
 
-	console.log('Tosca Log Enhancer v1.2 loaded.');
+	console.log('Tosca Log Enhancer v1.3 loaded.');
 
 	let isProcessing = false;
-	let lastContent = '';
+	let processedLines = new Set();
+	let enhancedContainer = null;
 	let updateTimeout = null;
+	let stylesInjected = false;
+	let lastUpdateTime = 0;
+	let lastContentHash = '';
 
 	const styles = `
         .tosca-log-container {
@@ -30,6 +34,8 @@
             padding: 0;
             border: none;
             box-sizing: border-box;
+            contain: layout style;
+            will-change: contents;
         }
 
         .log-line {
@@ -39,6 +45,7 @@
             border-radius: 3px;
             border-left: 3px solid transparent;
             box-sizing: border-box;
+            transform: translateZ(0);
         }
 
         .log-line.succeeded {
@@ -150,6 +157,31 @@
 		return 'info';
 	}
 
+	function injectStyles() {
+		if (!stylesInjected && !document.getElementById('tosca-log-styles')) {
+			const styleElement = document.createElement('style');
+			styleElement.id = 'tosca-log-styles';
+			styleElement.textContent = styles;
+			document.head.appendChild(styleElement);
+			stylesInjected = true;
+		}
+	}
+
+	function createLogLineElement(line, lineNumber) {
+		const trimmedLine = line.trim();
+		if (!trimmedLine) return null;
+
+		const cssClass = classifyLogLine(trimmedLine);
+		const escapedLine = escapeHtml(trimmedLine);
+
+		const logLineDiv = document.createElement('div');
+		logLineDiv.className = `log-line ${cssClass}`;
+		logLineDiv.innerHTML = escapedLine;
+		logLineDiv.dataset.lineNumber = lineNumber;
+
+		return logLineDiv;
+	}
+
 	function enhanceLogs() {
 		if (isProcessing) return;
 
@@ -163,49 +195,91 @@
 				return;
 			}
 
+			injectStyles();
+
 			const currentContent = logContainer.innerText;
+			const currentLines = currentContent.split('\n').filter(line => line.trim());
+			
+			// Create a simple hash of the content to detect actual changes
+			const contentHash = currentContent.length + ':' + (currentLines.length > 0 ? currentLines[currentLines.length - 1] : '');
+			const now = Date.now();
+			
+			// Skip if content hasn't changed and we recently processed
+			if (contentHash === lastContentHash && (now - lastUpdateTime) < 500) {
+				return;
+			}
+			
+			lastContentHash = contentHash;
+			lastUpdateTime = now;
 
-			// Check if container was replaced or content changed
-			let enhancedContainer = logContainer.querySelector('.tosca-log-container');
-			const containerExists = !!enhancedContainer;
+			// Create or find our enhanced container
+			if (!enhancedContainer || !logContainer.contains(enhancedContainer)) {
+				enhancedContainer = document.createElement('div');
+				enhancedContainer.className = 'tosca-log-container';
 
-			// If container exists but content is different, or container doesn't exist
-			if (currentContent !== lastContent || !containerExists) {
-				lastContent = currentContent;
+				// Store scroll position if container exists
+				const scrollTop = logContainer.scrollTop;
 
-				// Add styles to document (only once)
-				if (!document.getElementById('tosca-log-styles')) {
-					const styleElement = document.createElement('style');
-					styleElement.id = 'tosca-log-styles';
-					styleElement.textContent = styles;
-					document.head.appendChild(styleElement);
-				}
-
-				const logLines = currentContent.split('\n').filter(line => line.trim());
-
-				const processedLines = logLines.map(line => {
-					const trimmedLine = line.trim();
-					if (!trimmedLine) return '';
-
-					const cssClass = classifyLogLine(trimmedLine);
-					const escapedLine = escapeHtml(trimmedLine);
-
-					return `<div class="log-line ${cssClass}">${escapedLine}</div>`;
-				});
-
-				// Always recreate the container to handle page updates
-				if (!enhancedContainer || !containerExists) {
-					enhancedContainer = document.createElement('div');
-					enhancedContainer.className = 'tosca-log-container';
-				}
-
-				enhancedContainer.innerHTML = processedLines.join('');
-
-				// Replace the entire content of logContainer
+				// Replace container content
 				logContainer.innerHTML = '';
 				logContainer.appendChild(enhancedContainer);
 
-				console.log(`Tosca Log Enhancer: Enhanced ${processedLines.length} log lines (container recreated: ${!containerExists})`);
+				// Restore scroll position
+				logContainer.scrollTop = scrollTop;
+
+				// Reset tracking
+				processedLines.clear();
+			}
+
+			// Get current number of processed lines
+			const currentProcessedCount = enhancedContainer.children.length;
+
+			// If we have fewer lines than displayed, container was reset
+			if (currentLines.length < currentProcessedCount) {
+				enhancedContainer.innerHTML = '';
+				processedLines.clear();
+			}
+
+			// Process new lines (from currentProcessedCount onwards)
+			if (currentLines.length > currentProcessedCount) {
+				const fragment = document.createDocumentFragment();
+				let newLinesCount = 0;
+
+				for (let i = currentProcessedCount; i < currentLines.length; i++) {
+					const line = currentLines[i];
+					const lineKey = `${i}:${line.trim()}`;
+
+					if (!processedLines.has(lineKey)) {
+						const logLineElement = createLogLineElement(line, i);
+						if (logLineElement) {
+							fragment.appendChild(logLineElement);
+							newLinesCount++;
+						}
+						processedLines.add(lineKey);
+					}
+				}
+
+				if (newLinesCount > 0) {
+					enhancedContainer.appendChild(fragment);
+					console.log(`Tosca Log Enhancer: Added ${newLinesCount} new lines (total: ${currentLines.length})`);
+				}
+			} else if (currentLines.length < processedLines.size) {
+				// Full reset needed
+				enhancedContainer.innerHTML = '';
+				processedLines.clear();
+
+				const fragment = document.createDocumentFragment();
+				currentLines.forEach((line, index) => {
+					const lineKey = `${index}:${line.trim()}`;
+					processedLines.add(lineKey);
+					const logLineElement = createLogLineElement(line, index);
+					if (logLineElement) {
+						fragment.appendChild(logLineElement);
+					}
+				});
+
+				enhancedContainer.appendChild(fragment);
+				console.log(`Tosca Log Enhancer: Full reset, processed ${currentLines.length} lines`);
 			}
 
 		} catch (error) {
@@ -227,7 +301,7 @@
 		};
 	}
 
-	const debouncedEnhance = debounce(enhanceLogs, 300);
+	const debouncedEnhance = debounce(enhanceLogs, 250);
 
 	function initLogEnhancer() {
 		console.log('Tosca Log Enhancer: Initializing...');
@@ -252,12 +326,19 @@
 
 		// Set up MutationObserver
 		const observer = new MutationObserver((mutations) => {
+			// Only process if we haven't updated recently
+			const now = Date.now();
+			if (now - lastUpdateTime < 200) return;
+			
 			const hasRelevantChanges = mutations.some(mutation => {
 				if (mutation.type === 'childList') {
-					// Check for any text content changes or new nodes
+					// Check for any text content changes or new nodes, but exclude our own changes
 					const hasTextChanges = Array.from(mutation.addedNodes).some(node => {
 						return node.nodeType === Node.TEXT_NODE ||
-							(node.nodeType === Node.ELEMENT_NODE && node.textContent);
+							(node.nodeType === Node.ELEMENT_NODE && 
+							 node.textContent && 
+							 !node.classList?.contains('tosca-log-container') &&
+							 !node.classList?.contains('log-line'));
 					});
 
 					// Also check if our enhanced container was removed
@@ -286,14 +367,21 @@
 
 		// Additional periodic check to handle any missed updates
 		setInterval(() => {
-			if (!isProcessing) {
+			if (!isProcessing && (Date.now() - lastUpdateTime) > 2000) {
 				const logContainer = findLogContainer();
-				if (logContainer && !logContainer.querySelector('.tosca-log-container')) {
-					console.log('Tosca Log Enhancer: Periodic check detected missing container');
-					enhanceLogs();
+				if (logContainer) {
+					const containerMissing = !logContainer.querySelector('.tosca-log-container');
+					const currentContent = logContainer.innerText;
+					const contentHash = currentContent.length + ':' + (currentContent.split('\n').filter(line => line.trim()).slice(-1)[0] || '');
+					const contentChanged = contentHash !== lastContentHash;
+
+					if (containerMissing || contentChanged) {
+						console.log('Tosca Log Enhancer: Periodic check detected changes');
+						enhanceLogs();
+					}
 				}
 			}
-		}, 6000); // Check every 6 seconds (slightly longer than page update interval)
+		}, 5000); // Check every 5 seconds, but only if no recent updates
 
 		console.log('Tosca Log Enhancer: MutationObserver initialized');
 	}
