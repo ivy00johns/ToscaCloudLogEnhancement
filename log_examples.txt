@@ -1,0 +1,317 @@
+1   2025-06-10 20:26:43Z [INF][Recording] Screen recorder: Recording
+
+2   2025-06-10 20:26:48Z [INF][TBox] Starting TestCase "Verify that a "Viewer" can access the list and Read-Only pages." [START TIME: 2025-06-10 20:26:48 GMT+00:00]
+
+3   2025-06-10 20:26:49Z [INF][TBox]     [Failed] "Is the Browser open?" | There were fewer than '1' windows found with caption '*Chrome'! [DURATION: 00:00:00.1767102]
+
+4   2025-06-10 20:26:49Z [INF][TBox]         [Failed] "Operation" [DURATION: 00:00:00.0183205]
+
+5   2025-06-10 20:26:49Z [INF][TBox]     [Succeeded] "Set browser tab "CONSTRAINT_INDEX" to 1." [DURATION: 00:00:00.0180069]
+
+6   2025-06-10 20:26:49Z [INF][TBox]         [Succeeded] "CONSTRAINT_INDEX" [DURATION: 00:00:00.0012444]
+
+7   2025-06-10 20:26:49Z [INF][TBox]               Message: Buffer with name 'CONSTRAINT_INDEX' has been set to value '1'.
+
+8   2025-06-10 20:26:55Z [INF][TBox]     [Succeeded] "Open the Okta login page." [DURATION: 00:00:05.9304749]
+
+9   2025-06-10 20:26:55Z [INF][TBox]           Message: Opened https://fusionx.my-test.tricentis.com/ in Chrome, in a new tab.
+
+10  2025-06-10 20:26:55Z [INF][TBox]     [Succeeded] "Wait for browser to open." [DURATION: 00:00:00.0071753]
+
+11  2025-06-10 20:26:55Z [INF][TBox]         [Succeeded] "Operation" [DURATION: 00:00:00.0012271]
+
+12  2025-06-10 20:26:55Z [INF][TBox]               Message: Operation 'Wait On Open' has been performed successfully on window with caption '*'.
+
+13  2025-06-10 20:27:03Z [INF][TBox]     [Succeeded] "Wait for page load." [DURATION: 00:00:08.1729720]
+
+14  2025-06-10 20:27:03Z [INF][TBox]           Message: Waited for 8000ms.
+
+15  2025-06-10 20:27:03Z [INF][TBox]     [Succeeded] "'{CP[ENVIRONMENT]}'=='Dev'?" [DURATION: 00:00:00.4282316]
+
+16  2025-06-10 20:27:03Z [INF][TBox]         [Succeeded] "Expression" [DURATION: 00:00:00.0007335]
+
+17  2025-06-10 20:27:03Z [INF][TBox]               Message: ''Dev'=='Dev'' evaluated to 'True'
+
+18  2025-06-10 20:27:13Z [INF][TBox]     [Succeeded] "Enter "Username" => Click "Next"." [DURATION: 00:00:09.4915940]
+
+19  2025-06-10 20:27:13Z [INF][TBox]         [Succeeded] "Username" [DURATION: 00:00:00.6659858]
+
+20  2025-06-10 20:27:13Z [INF][TBox]         [Succeeded] "Next" [DURATION: 00:00:00.2816862]
+
+21  2025-06-10 20:27:15Z [INF][TBox]     [Succeeded] "Wait for page load." [DURATION: 00:00:02.0034950]
+
+22  2025-06-10 20:27:15Z [INF][TBox]           Message: Waited for 2000ms.
+
+23  2025-06-10 20:27:15Z [INF][TBox]     [Succeeded] "Enter "Password" => Click "Verify"." [DURATION: 00:00:00.2631608]
+
+24  2025-06-10 20:27:15Z [INF][TBox]         [Succeeded] ""Password" field" [DURATION: 00:00:00.1815434]
+
+25  2025-06-10 20:27:15Z [INF][TBox]         [Succeeded] ""Verify" button" [DURATION: 00:00:00.0617390]
+
+26  2025-06-10 20:27:25Z [INF][TBox]     [Succeeded] "Wait for page load." [DURATION: 00:00:10.0704631]
+
+27  2025-06-10 20:27:25Z [INF][TBox]           Message: Waited for 10000ms.
+
+28  2025-06-10 20:27:30Z [INF][TBox]     [Succeeded] "Wait for Logo." [DURATION: 00:00:04.7134802]
+
+29  2025-06-10 20:27:30Z [INF][TBox]         [Succeeded] "Logo" [DURATION: 00:00:00.0179222]
+
+30  2025-06-10 20:27:30Z [INF][TBox]               Message: Verification was successful.
+
+31  2025-06-10 20:27:30Z [INF][TBox]                        Expected value == "True"
+
+32  2025-06-10 20:27:30Z [INF][TBox]                        Actual value: "True"
+
+33  2025-06-10 20:27:30Z [INF][TBox]     [Succeeded] "Click on "Workspaces"." [DURATION: 00:00:00.2522742]
+
+34  2025-06-10 20:27:30Z [INF][TBox]         [Succeeded] "Workspaces" [DURATION: 00:00:00.0408623]
+
+35  2025-06-10 20:27:32Z [INF][TBox]     [Succeeded] "Verify "Reporting" exists in the dropdown menu." [DURATION: 00:00:01.8062769]
+
+36  2025-06-10 20:27:32Z [INF][TBox]         [Succeeded] "Dropdown Menu" [DURATION: 00:00:01.0621596]
+
+37  2025-06-10 20:27:32Z [INF][TBox]               Message: Verification was successful.
+
+38  2025-06-10 20:27:32Z [INF][TBox]                        Expected value == "True"
+
+39  2025-06-10 20:27:32Z [INF][TBox]                        Actual value: "True"
+
+40  2025-06-10 20:27:34Z [INF][TBox]     [Succeeded] "Click on "Reporting"." [DURATION: 00:00:01.9338440]
+
+41  2025-06-10 20:27:34Z [INF][TBox]         [Succeeded] "Dropdown Menu" [DURATION: 00:00:01.8827709]
+
+42  2025-06-10 20:27:35Z [INF][TBox]     [Succeeded] "Wait for page load." [DURATION: 00:00:01.5082360]
+
+43  2025-06-10 20:27:35Z [INF][TBox]           Message: Waited for 1500ms.
+
+44  2025-06-10 20:27:37Z [INF][TBox]     [Succeeded] "Goto the "Reporting" section." [DURATION: 00:00:02.0121948]
+
+45  2025-06-10 20:27:37Z [INF][TBox]         [Succeeded] ""Reports" button" [DURATION: 00:00:01.9363556]
+
+46  2025-06-10 20:27:42Z [INF][TBox]     [Succeeded] "Wait for page load." [DURATION: 00:00:05.0073351]
+
+47  2025-06-10 20:27:42Z [INF][TBox]           Message: Waited for 5000ms.
+
+48  2025-06-10 20:27:43Z [INF][TBox]     [Succeeded] "Verify that they can access the Reports list page." [DURATION: 00:00:00.9571908]
+
+49  2025-06-10 20:27:43Z [INF][TBox]         [Succeeded] "Main title" [DURATION: 00:00:00.8258419]
+
+50  2025-06-10 20:27:43Z [INF][TBox]               Message: Verification was successful.
+
+51  2025-06-10 20:27:43Z [INF][TBox]                        Expected value == "True"
+
+52  2025-06-10 20:27:43Z [INF][TBox]                        Actual value: "True"
+
+53  2025-06-10 20:27:43Z [INF][TBox]         [Succeeded] ""More info" icon" [DURATION: 00:00:00.8172292]
+
+54  2025-06-10 20:27:43Z [INF][TBox]               Message: Verification was successful.
+
+55  2025-06-10 20:27:43Z [INF][TBox]                        Expected value == "True"
+
+56  2025-06-10 20:27:43Z [INF][TBox]                        Actual value: "True"
+
+57  2025-06-10 20:27:43Z [INF][TBox]         [Succeeded] ""Generate report" button" [DURATION: 00:00:00.7886132]
+
+58  2025-06-10 20:27:43Z [INF][TBox]               Message: Verification was successful.
+
+59  2025-06-10 20:27:43Z [INF][TBox]                        Expected value == "False"
+
+60  2025-06-10 20:27:43Z [INF][TBox]                        Actual value: "False"
+
+61  2025-06-10 20:27:43Z [INF][TBox]         [Succeeded] "Search icon" [DURATION: 00:00:00.4734100]
+
+62  2025-06-10 20:27:43Z [INF][TBox]               Message: Verification was successful.
+
+63  2025-06-10 20:27:43Z [INF][TBox]                        Expected value == "True"
+
+64  2025-06-10 20:27:43Z [INF][TBox]                        Actual value: "True"
+
+65  2025-06-10 20:27:43Z [INF][TBox]         [Succeeded] "Filter icon" [DURATION: 00:00:00.4593779]
+
+66  2025-06-10 20:27:43Z [INF][TBox]               Message: Verification was successful.
+
+67  2025-06-10 20:27:43Z [INF][TBox]                        Expected value == "True"
+
+68  2025-06-10 20:27:43Z [INF][TBox]                        Actual value: "True"
+
+69  2025-06-10 20:27:43Z [INF][TBox]         [Succeeded] "Reports list grid" [DURATION: 00:00:00.4559117]
+
+70  2025-06-10 20:27:43Z [INF][TBox]               Message: Verification was successful.
+
+71  2025-06-10 20:27:43Z [INF][TBox]                        Expected value == "True"
+
+72  2025-06-10 20:27:43Z [INF][TBox]                        Actual value: "True"
+
+73  2025-06-10 20:27:43Z [INF][TBox]         [Succeeded] ""Rows per page" title" [DURATION: 00:00:00.1371445]
+
+74  2025-06-10 20:27:43Z [INF][TBox]               Message: Verification was successful.
+
+75  2025-06-10 20:27:43Z [INF][TBox]                        Expected value == "True"
+
+76  2025-06-10 20:27:43Z [INF][TBox]                        Actual value: "True"
+
+77  2025-06-10 20:27:43Z [INF][TBox]         [Succeeded] ""Rows per page" count dropdown" [DURATION: 00:00:00.0386582]
+
+78  2025-06-10 20:27:43Z [INF][TBox]               Message: Verification was successful.
+
+79  2025-06-10 20:27:43Z [INF][TBox]                        Expected value == "True"
+
+80  2025-06-10 20:27:43Z [INF][TBox]                        Actual value: "True"
+
+81  2025-06-10 20:27:43Z [INF][TBox]         [Succeeded] "Go to previous page" [DURATION: 00:00:00.0049729]
+
+82  2025-06-10 20:27:43Z [INF][TBox]               Message: Verification was successful.
+
+83  2025-06-10 20:27:43Z [INF][TBox]                        Expected value == "True"
+
+84  2025-06-10 20:27:43Z [INF][TBox]                        Actual value: "True"
+
+85  2025-06-10 20:27:43Z [INF][TBox]         [Succeeded] "Go to next page" [DURATION: 00:00:00.0025193]
+
+86  2025-06-10 20:27:43Z [INF][TBox]               Message: Verification was successful.
+
+87  2025-06-10 20:27:43Z [INF][TBox]                        Expected value == "True"
+
+88  2025-06-10 20:27:43Z [INF][TBox]                        Actual value: "True"
+
+89  2025-06-10 20:27:47Z [INF][TBox]     [Succeeded] "Click on a Report in the grid." [DURATION: 00:00:04.0116654]
+
+90  2025-06-10 20:27:47Z [INF][TBox]         [Succeeded] "Reports list grid" [DURATION: 00:00:03.9821794]
+
+91  2025-06-10 20:27:52Z [INF][TBox]     [Succeeded] "Wait for page load." [DURATION: 00:00:05.0172314]
+
+92  2025-06-10 20:27:52Z [INF][TBox]           Message: Waited for 5000ms.
+
+93  2025-06-10 20:27:54Z [INF][TBox]     [Succeeded] "Verify the Read-Only UI elements are present." [DURATION: 00:00:01.8960641]
+
+94  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] "Back button" [DURATION: 00:00:01.8383750]
+
+95  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+96  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+97  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+98  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] ""Reports" title" [DURATION: 00:00:00.1401266]
+
+99  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+100  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+101  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+102  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] ""Download PDF" button" [DURATION: 00:00:00.1295377]
+
+103  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+104  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+105  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+106  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] ""Workspace" title" [DURATION: 00:00:00.0964716]
+
+107  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+108  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+109  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+110  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] ""Workspace" input field" [DURATION: 00:00:00.0863897]
+
+111  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+112  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+113  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+114  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] ""Report" title" [DURATION: 00:00:00.0771880]
+
+115  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+116  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+117  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+118  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] ""Report" input field" [DURATION: 00:00:00.0675294]
+
+119  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+120  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+121  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+122  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] ""Date Range" title" [DURATION: 00:00:00.0601632]
+
+123  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+124  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+125  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+126  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] ""Date Range" input field" [DURATION: 00:00:00.0543904]
+
+127  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+128  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+129  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+130  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] ""Name" title" [DURATION: 00:00:00.0474360]
+
+131  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+132  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+133  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+134  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] ""Name" input field" [DURATION: 00:00:00.0414939]
+
+135  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+136  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+137  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+138  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] ""Description" title" [DURATION: 00:00:00.0345175]
+
+139  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+140  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+141  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+142  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] ""Description" input field" [DURATION: 00:00:00.0292010]
+
+143  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+144  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+145  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+146  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] ""Show more" button" [DURATION: 00:00:00.0191694]
+
+147  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+148  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+149  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+150  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] ""Filters" title" [DURATION: 00:00:00.0133436]
+
+151  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+152  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+153  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+154  2025-06-10 20:27:54Z [INF][TBox]         [Succeeded] ""Report Preview" iFrame" [DURATION: 00:00:00.0064072]
+
+155  2025-06-10 20:27:54Z [INF][TBox]               Message: Verification was successful.
+
+156  2025-06-10 20:27:54Z [INF][TBox]                        Expected value == "True"
+
+157  2025-06-10 20:27:54Z [INF][TBox]                        Actual value: "True"
+
+158  2025-06-10 20:27:54Z [INF][TBox]     [Succeeded] "Close the browser." [DURATION: 00:00:00.0072776]
+
+159  2025-06-10 20:27:55Z [INF][TBox] [Succeeded] "Verify that a "Viewer" can access the list and Read-Only pages." [DURATION: 00:01:06.1572804]
