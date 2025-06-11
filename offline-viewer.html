@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tosca Cloud Log Viewer - Offline</title>
+    <style>
+        body {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .controls {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            background-color: #ecf0f1;
+        }
+
+        .controls textarea {
+            width: 100%;
+            height: 120px;
+            font-family: inherit;
+            font-size: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            padding: 10px;
+            resize: vertical;
+        }
+
+        .controls button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .controls button:hover {
+            background-color: #2980b9;
+        }
+
+        .log-viewer {
+            padding: 0;
+            min-height: 400px;
+        }
+
+        .tosca-log-container {
+            font-size: 12px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+            background-color: #f8f9fa;
+            padding: 0;
+            margin: 0;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .log-line {
+            display: block;
+            padding: 3px 12px;
+            margin: 0;
+            border-left: 4px solid transparent;
+            border-bottom: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .log-line:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+
+        .log-line.succeeded {
+            background-color: rgba(40, 167, 69, 0.08);
+            border-left-color: #28a745;
+        }
+
+        .log-line.failed {
+            background-color: rgba(220, 53, 69, 0.08);
+            border-left-color: #dc3545;
+        }
+
+        .log-line.info {
+            background-color: rgba(23, 162, 184, 0.05);
+            border-left-color: #17a2b8;
+        }
+
+        .log-line.warning {
+            background-color: rgba(255, 193, 7, 0.08);
+            border-left-color: #ffc107;
+        }
+
+        .log-line.error {
+            background-color: rgba(220, 53, 69, 0.12);
+            border-left-color: #dc3545;
+            font-weight: bold;
+        }
+
+        .log-timestamp {
+            color: #6c757d;
+            font-weight: normal;
+        }
+
+        .stats {
+            padding: 15px 20px;
+            background-color: #ecf0f1;
+            border-top: 1px solid #e0e0e0;
+            border-radius: 0 0 8px 8px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background-color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border-left: 3px solid #95a5a6;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .stat-item.succeeded { border-left-color: #28a745; }
+        .stat-item.failed { border-left-color: #dc3545; }
+        .stat-item.warning { border-left-color: #ffc107; }
+        .stat-item.info { border-left-color: #17a2b8; }
+        .stat-item.error { border-left-color: #dc3545; }
+
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Tosca Cloud Log Viewer</h1>
+            <p style="margin: 5px 0 0 0; opacity: 0.8;">Offline log enhancement and analysis tool</p>
+        </div>
+
+        <div class="controls">
+            <textarea id="logInput" placeholder="Paste your Tosca Cloud logs here..."></textarea>
+            <button onclick="processLogs()">Process Logs</button>
+            <button onclick="loadSampleLogs()">Load Sample Logs</button>
+            <button onclick="clearLogs()">Clear</button>
+        </div>
+
+        <div class="log-viewer">
+            <div id="logContainer" class="tosca-log-container">
+                <div class="empty-state">
+                    Paste your logs above and click "Process Logs" to begin
+                </div>
+            </div>
+        </div>
+
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-item" id="totalLines">Total: 0</div>
+            <div class="stat-item succeeded" id="succeededLines">Succeeded: 0</div>
+            <div class="stat-item failed" id="failedLines">Failed: 0</div>
+            <div class="stat-item warning" id="warningLines">Warning: 0</div>
+            <div class="stat-item info" id="infoLines">Info: 0</div>
+            <div class="stat-item error" id="errorLines">Error: 0</div>
+        </div>
+    </div>
+
+    <script>
+        // Log classification logic extracted from userscript
+        function classifyLogLine(line) {
+            const upperLine = line.toUpperCase();
+
+            if (upperLine.includes('[SUCCEEDED]') || upperLine.includes('SUCCESS')) {
+                return 'succeeded';
+            } else if (upperLine.includes('[FAILED]') || upperLine.includes('FAILURE')) {
+                // Check if this is a setup/cleanup/evaluation step that should be yellow instead of red
+                const setupCleanupPatterns = [
+                    'IS THE BROWSER OPEN?',
+                    'OPERATION"',  // Generic operation checks
+                    'CLEANUP',
+                    'SETUP',
+                    'EVALUATION',
+                    'CHECK IF',
+                    'VERIFY IF',
+                    'WINDOWS FOUND',
+                    'TBOX EVALUATION TOOL',  // TBox evaluation expressions
+                    'EXPRESSION"',           // Generic expression evaluations
+                    'EVALUATED TO'           // When showing evaluation results
+                ];
+
+                const isSetupCleanup = setupCleanupPatterns.some(pattern =>
+                    upperLine.includes(pattern)
+                );
+
+                if (isSetupCleanup) {
+                    return 'warning';  // Yellow for setup/cleanup failures
+                }
+
+                return 'failed';  // Red for actual test failures
+            } else if (upperLine.includes('[ERR]') || upperLine.includes('ERROR')) {
+                return 'error';
+            } else if (upperLine.includes('[WRN]') || upperLine.includes('WARNING')) {
+                return 'warning';
+            } else if (upperLine.includes('[INF]') || upperLine.includes('INFO')) {
+                return 'info';
+            }
+
+            return 'info';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function createLogLineElement(line, lineNumber) {
+            const trimmedLine = line.trim();
+            if (!trimmedLine) return null;
+
+            const cssClass = classifyLogLine(trimmedLine);
+            const escapedLine = escapeHtml(trimmedLine);
+
+            const logLineDiv = document.createElement('div');
+            logLineDiv.className = `log-line ${cssClass}`;
+            logLineDiv.innerHTML = escapedLine;
+            logLineDiv.dataset.lineNumber = lineNumber;
+
+            return logLineDiv;
+        }
+
+        function updateStats(stats) {
+            document.getElementById('totalLines').textContent = `Total: ${stats.total}`;
+            document.getElementById('succeededLines').textContent = `Succeeded: ${stats.succeeded}`;
+            document.getElementById('failedLines').textContent = `Failed: ${stats.failed}`;
+            document.getElementById('warningLines').textContent = `Warning: ${stats.warning}`;
+            document.getElementById('infoLines').textContent = `Info: ${stats.info}`;
+            document.getElementById('errorLines').textContent = `Error: ${stats.error}`;
+            
+            document.getElementById('stats').style.display = 'flex';
+        }
+
+        function processLogs() {
+            const input = document.getElementById('logInput').value.trim();
+            const container = document.getElementById('logContainer');
+
+            if (!input) {
+                container.innerHTML = '<div class="empty-state">Please enter some log content to process</div>';
+                document.getElementById('stats').style.display = 'none';
+                return;
+            }
+
+            const lines = input.split('\n').filter(line => line.trim());
+            const fragment = document.createDocumentFragment();
+            
+            const stats = {
+                total: lines.length,
+                succeeded: 0,
+                failed: 0,
+                warning: 0,
+                info: 0,
+                error: 0
+            };
+
+            lines.forEach((line, index) => {
+                const logLineElement = createLogLineElement(line, index + 1);
+                if (logLineElement) {
+                    const classification = classifyLogLine(line);
+                    stats[classification]++;
+                    fragment.appendChild(logLineElement);
+                }
+            });
+
+            container.innerHTML = '';
+            container.appendChild(fragment);
+            updateStats(stats);
+
+            console.log(`Processed ${lines.length} log lines`);
+        }
+
+        function loadSampleLogs() {
+            // Sample logs from the example file
+            const sampleLogs = `1   2025-06-10 20:26:32Z [INF][Recording] Screen recorder: Recording
+2   2025-06-10 20:26:32Z [INF][TBox] Starting TestCase "Verify that a "Viewer" cannot generate reports." [START TIME: 2025-06-10 20:26:32 GMT+00:00]
+3   2025-06-10 20:26:32Z [INF][TBox]     [Failed] "Is the Browser open?" | There were fewer than '1' windows found with caption '*Chrome'! [DURATION: 00:00:00.1019800]
+4   2025-06-10 20:26:32Z [INF][TBox]         [Failed] "Operation" [DURATION: 00:00:00.0179354]
+5   2025-06-10 20:26:32Z [INF][TBox]     [Succeeded] "Set browser tab "CONSTRAINT_INDEX" to 1." [DURATION: 00:00:00.0067266]
+6   2025-06-10 20:26:32Z [INF][TBox]         [Succeeded] "CONSTRAINT_INDEX" [DURATION: 00:00:00.0008758]
+7   2025-06-10 20:26:32Z [INF][TBox]               Message: Buffer with name 'CONSTRAINT_INDEX' has been set to value '1'.
+8   2025-06-10 20:26:38Z [INF][TBox]     [Succeeded] "Open the Okta login page." [DURATION: 00:00:05.7776414]
+9   2025-06-10 20:26:38Z [INF][TBox]           Message: Opened https://fusionx.my-test.tricentis.com/ in Chrome, in a new tab.
+10  2025-06-10 20:26:38Z [INF][TBox]     [Succeeded] "Wait for browser to open." [DURATION: 00:00:00.0059097]
+63  2025-06-10 20:27:15Z [INF][TBox]     [Failed] "Verify that you can access the create Reports page." | Verification has failed. Expected value == "True" Actual value: "False" [DURATION: 00:00:00.3492618]
+64  2025-06-10 20:27:15Z [INF][TBox]         [Failed] ""Reports" title" [DURATION: 00:00:00.2230986]
+77  2025-06-10 20:27:26Z [INF][TBox]     [Failed] "Verify that the "Save" button is disabled." | Could not find Button '"Save" button' with the following properties: - Id: report-create-generate-report-button [DURATION: 00:00:11.2212574]
+78  2025-06-10 20:27:26Z [INF][TBox]         [Failed] ""Save" button" [DURATION: 00:00:11.1581277]
+86  2025-06-10 20:27:27Z [INF][TBox] [Failed] "Verify that a "Viewer" cannot generate reports." [DURATION: 00:00:55.0638199]`;
+
+            document.getElementById('logInput').value = sampleLogs;
+            processLogs();
+        }
+
+        function clearLogs() {
+            document.getElementById('logInput').value = '';
+            document.getElementById('logContainer').innerHTML = '<div class="empty-state">Paste your logs above and click "Process Logs" to begin</div>';
+            document.getElementById('stats').style.display = 'none';
+        }
+
+        // Auto-process when Enter is pressed in textarea
+        document.getElementById('logInput').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                processLogs();
+            }
+        });
+    </script>
+</body>
+</html>
